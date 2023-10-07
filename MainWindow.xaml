@@ -39,7 +39,6 @@
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <Button Name="ExperimentsButton" Content="experiments" Click="ExperimentsButton_OnClick" Visibility="Collapsed"/>
-            <Button Name="UpdateButton" Content="new version available!" Click="UpdateButton_OnClick" Visibility="Collapsed"/>
             <Button Name="SettingsButton" Content="settings" Click="SettingsButton_OnClick"/>
             <Button Name="AboutButton" Content="about" Click="AboutButton_OnClick"/>
         </controls:WindowCommands>
@@ -61,14 +60,6 @@
                     </Grid.RowDefinitions>
                     <CheckBox x:Name="RunOnStartupCheckBox" Content="Run on startup" HorizontalAlignment="Left" Click="RunOnStartupCheckBox_OnClick" Grid.Row="0" Margin="0,0,0,15"/>
                     <CheckBox x:Name="MinimizeOnStartupCheckBox" Content="Minimize on startup" HorizontalAlignment="Left" Click="MinimizeOnStartupCheckBox_OnClick" Grid.Row="1" Margin="0,0,0,15"/>
-                    <Grid Grid.Row="2" Margin="0,0,0,15">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="3*"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Accent colour:" Grid.Column="0"/>
-                        <ComboBox Name="ThemeComboBox" SelectionChanged="ThemeComboBox_OnSelectionChanged" Grid.Column="1"/>
-                    </Grid>
                     <Grid Grid.Row="3" Margin="0,0,0,15">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"/>

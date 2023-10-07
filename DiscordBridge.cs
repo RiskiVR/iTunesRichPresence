@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -7,7 +8,6 @@ using System.Windows.Threading;
 using iTunesLib;
 using iTunesRichPresence_Rewrite.Properties;
 using iTunesRichPresence_Rewrite.Tokens;
-using SharpRaven.Data;
 
 namespace iTunesRichPresence_Rewrite {
     /// <summary>
@@ -118,7 +118,6 @@ namespace iTunesRichPresence_Rewrite {
                 DiscordRpc.UpdatePresence(newPresence);
                 return;
             }
-            
 
             if (_currentArtist == ITunes.CurrentTrack.Artist && _currentTitle == ITunes.CurrentTrack.Name &&
                 _currentState == ITunes.PlayerState && _currentPosition == ITunes.PlayerPosition) return;
@@ -147,14 +146,7 @@ namespace iTunesRichPresence_Rewrite {
                 DiscordRpc.UpdatePresence(presence);
             }
             catch (Exception exception) {
-                exception.Data.Add("CurrentArtist", _currentArtist);
-                exception.Data.Add("CurrentTitle", _currentTitle);
-                exception.Data.Add("CurrentState", _currentState.ToString());
-                exception.Data.Add("CurrentPosition", _currentPosition.ToString());
-                exception.Data.Add("Details", presence.details);
-                exception.Data.Add("State", presence.state);
-                Globals.RavenClient.Capture(new SentryEvent(exception));
-                Globals.Log($"An unhandled exception has occurred and been reported to Sentry: {exception.Message}");
+                Globals.Log($"An unhandled exception has occurred: {exception.Message}");
             }
             
         }

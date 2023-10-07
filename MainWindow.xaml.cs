@@ -10,13 +10,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Interop;
+using ControlzEx.Theming;
 using iTunesLib;
 using iTunesRichPresence_Rewrite.Properties;
 using MahApps.Metro;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
-using Octokit;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using TextBox = System.Windows.Controls.TextBox;
@@ -29,8 +29,6 @@ namespace iTunesRichPresence_Rewrite {
 
         private readonly NotifyIcon _notifyIcon;
         private DiscordBridge _bridge;
-
-        private readonly Release _latestRelease;
 
         private TextBox _lastFocusedTextBox;
 
@@ -45,13 +43,6 @@ namespace iTunesRichPresence_Rewrite {
             _notifyIcon.MouseDoubleClick += (sender, args) => {
                 SetVisibility(true);
             };
-
-            ThemeComboBox.ItemsSource = ThemeManager.Accents.Select(accent => accent.Name);
-            ThemeComboBox.SelectedItem = Settings.Default.Accent;
-
-            ThemeManager.ChangeAppStyle(Application.Current,
-                                        ThemeManager.GetAccent(Settings.Default.Accent),
-                                        ThemeManager.GetAppTheme("BaseLight"));
 
             RunOnStartupCheckBox.IsChecked = Settings.Default.RunOnStartup;
             PlayingTopLineFormatTextBox.Text = Settings.Default.PlayingTopLine;
@@ -77,17 +68,6 @@ namespace iTunesRichPresence_Rewrite {
 
 
             AppNameComboBox.SelectedItem = Settings.Default.AppName;
-
-            try {
-                var gitHubClient = new GitHubClient(new ProductHeaderValue("iTunesRichPresence"));
-                _latestRelease = gitHubClient.Repository.Release.GetLatest("nint8835", "iTunesRichPresence").Result;
-                if (!Assembly.GetExecutingAssembly().GetName().Version.ToString().StartsWith(_latestRelease.Name.Substring(1))) {
-                    UpdateButton.Visibility = Visibility.Visible;
-                }
-            }
-            catch {
-                // Occurs when it fails to check for updates, so we can safely ignore it
-            }
             
 
 #if DEBUG
@@ -212,24 +192,8 @@ namespace iTunesRichPresence_Rewrite {
             Settings.Default.Save();
         }
 
-        private async void UpdateButton_OnClick(object sender, RoutedEventArgs e) {
-            var result = await this.ShowMessageAsync("New version available!", "A new version of iTunesRichPresence is available. Would you like to download it now?", MessageDialogStyle.AffirmativeAndNegative);
-            if (result == MessageDialogResult.Affirmative) {
-                Process.Start(_latestRelease.HtmlUrl);
-            }
-        }
-
         private void SettingsButton_OnClick(object sender, RoutedEventArgs e) {
             SettingsFlyout.IsOpen = true;
-        }
-
-        private void ThemeComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
-            Settings.Default.Accent = (string) ThemeComboBox.SelectedItem;
-            Settings.Default.Save();
-            ThemeManager.ChangeAppStyle(Application.Current,
-                                        ThemeManager.GetAccent(Settings.Default.Accent),
-                                        ThemeManager.GetAppTheme("BaseLight"));
-
         }
 
         private void ExperimentsCheckBox_OnClick(object sender, RoutedEventArgs e) {
